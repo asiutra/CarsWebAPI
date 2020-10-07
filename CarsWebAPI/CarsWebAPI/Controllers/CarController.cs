@@ -20,23 +20,23 @@ namespace CarsWebAPI.Controllers
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAllCar()
+        public async Task<IActionResult> GetAllCar()
         {
-            var carList = _carService.GetAllCarsAsync();
+            var carList = await _carService.GetAllCarsAsync();
             return Ok(carList);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetSpecificCar(int id)
+        public async Task<IActionResult> GetSpecificCar(int id)
         {
-            var specificRecord = _carService.GetCarAsync(id);
+            var specificRecord = await _carService.GetCarAsync(id);
             return Ok(specificRecord);
         }
 
         [HttpPost]
-        public IActionResult AddCar(Car newCar)
+        public async Task<IActionResult> AddCar(Car newCar)
         {
-            var car = _carService.AddCarAsync(newCar);
+            var car = await _carService.AddCarAsync(newCar);
             return Ok(car);
         }
     }

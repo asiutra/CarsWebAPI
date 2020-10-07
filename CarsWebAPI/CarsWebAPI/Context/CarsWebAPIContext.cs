@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CarsWebAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace CarsWebAPI.Context
@@ -10,5 +11,6 @@ namespace CarsWebAPI.Context
     {
         public CarsWebAPIContext(DbContextOptions<CarsWebAPIContext> options) : base(options) {  }
 
+        public DbSet<Car> Cars { get; set; }
     }
 }

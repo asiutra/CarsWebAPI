@@ -8,10 +8,10 @@ namespace CarsWebAPI.Service.Interface
 {
     public interface ICarService
     {
-        IEnumerable<Car> AddCarAsync(Car addCar);
-        Car GetCarAsync(int id);
-        IEnumerable<Car> GetAllCarsAsync();
-        Car UpdateCarAsync();
-        Car DeleteCarAsync();
+        Task<ServiceResponse<IEnumerable<Car>>> AddCarAsync(Car addCar);
+        Task<ServiceResponse<Car>> GetCarAsync(int id);
+        Task<ServiceResponse<IEnumerable<Car>>> GetAllCarsAsync();
+        Task<ServiceResponse<Car>> UpdateCarAsync(Car updatedCar);
+        Task<ServiceResponse<Car>> DeleteCarAsync(int id);
     }
 }
