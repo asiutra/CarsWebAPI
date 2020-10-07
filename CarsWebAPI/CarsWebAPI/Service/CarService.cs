@@ -2,13 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CarsWebAPI.Context;
 using CarsWebAPI.Models;
 using CarsWebAPI.Service.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarsWebAPI.Service
 {
     public class CarService : ICarService
     {
+        private readonly CarsWebAPIContext _context;
+
+        public CarService(CarsWebAPIContext context)
+        {
+            _context = context;
+        }
+
+
+        //mock data
         private static List<Car> CarsList = new List<Car>
         {
             new Car
@@ -22,31 +33,60 @@ namespace CarsWebAPI.Service
             
         };
 
+        
 
-        public IEnumerable<Car> AddCarAsync(Car addCar)
+
+        public async Task<ServiceResponse<IEnumerable<Car>>> AddCarAsync(Car addCar)
         {
-            CarsList.Add(addCar);
-            return CarsList.ToList();
+            ServiceResponse<IEnumerable<Car>> serviceResponse = new ServiceResponse<IEnumerable<Car>>();
+
+            _context.Cars.Add(addCar);
+            await _context.SaveChangesAsync();
+            serviceResponse.Data = _context.Cars.ToList();
+
+            return serviceResponse;
         }
 
-        public Car GetCarAsync(int id)
+
+        public async Task<ServiceResponse<Car>> GetCarAsync(int id)
         {
-            return CarsList.FirstOrDefault(c => c.Id == id);
+            ServiceResponse<Car> serviceResponse = new ServiceResponse<Car>();
+
+            serviceResponse.Data = await _context.Cars.SingleOrDefaultAsync(c => c.Id == id);
+            return serviceResponse;
         }
 
-        public IEnumerable<Car> GetAllCarsAsync()
+
+        public async Task<ServiceResponse<IEnumerable<Car>>> GetAllCarsAsync()
         {
-            return CarsList.ToList();
+            ServiceResponse<IEnumerable<Car>> serviceResponse = new ServiceResponse<IEnumerable<Car>>();
+
+            serviceResponse.Data = await _context.Cars.ToListAsync();
+            return serviceResponse;
         }
 
-        public Car UpdateCarAsync()
+
+        public async Task<ServiceResponse<Car>> UpdateCarAsync(Car updatedCar)
         {
-            throw new NotImplementedException();
+            ServiceResponse<Car> serviceResponse= new ServiceResponse<Car>();
+
+            _context.Cars.Update(updatedCar);
+            await _context.SaveChangesAsync();
+
+            serviceResponse.Data = await _context.Cars.SingleOrDefaultAsync(c => c.Id == updatedCar.Id);
+            return serviceResponse;
         }
 
-        public Car DeleteCarAsync()
+
+        public async Task<ServiceResponse<Car>> DeleteCarAsync(int id)
         {
-            throw new NotImplementedException();
+            ServiceResponse<Car> serviceResponse = new ServiceResponse<Car>();
+
+            var toRemove = await _context.Cars.SingleOrDefaultAsync(c => c.Id == id);
+            _context.Cars.Remove(toRemove);
+            await _context.SaveChangesAsync();
+
+            return serviceResponse;
         }
     }
 }
